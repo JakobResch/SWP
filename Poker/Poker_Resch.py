@@ -1,102 +1,241 @@
 import random
-import numpy as np
 
-dict = {'Royal Flush':0,'Straight Flush':0,'Straße':0,'Flush':0,'Full House':0,'Paar':0,'Zwei Paare':0,'Drilling':0,'Vierling':0}
-dictPercentage = {'Royal Flush':0,'Straight Flush':0,'Straße':0,'Flush':0,'Full House':0,'Paar':0,'Zwei Paare':0,'Drilling':0,'Vierling':0}
+mlist = []
+hand = []
 
-def draw():
-    liste = []
-    for i in range(1,53):
-        liste.append(i)
-
-    for j in range(5):
-        value = random.randrange(0, 52)
-        liste[value], liste[51-j] = liste[51-j], liste[value]
-
-    fiveCards = []
-    for x in range(5):
-        fiveCards.append(liste[47+x])
-    return fiveCards
-
-drawnSymbol = []
-drawnColor = []
-
-def showCards(fiveCards):
-    for i in range(5):
-        drawnSymbol.append(fiveCards[i] % 13)
-        drawnColor.append(fiveCards[i] // 13) #int division
-    #print(fiveCards)
-    #print(drawnSymbol)
-    #print(drawnColor)
-    #0 = 2, ... 8 = 10, 9 = J, 10 = Q, 11 = K, 12 = A
-    #0 = Farbe1, 1 = Farbe2, 2 = Farbe3, 3 = Farbe4
+def ziehung(anz=5):
+    global mlist, hand
+    mlist = []
+    hand = []
+    for i in range(0, 52):
+        mlist.append(i)
+    for j in range(anz):
+        index = random.randrange(0, 52)
+        lastposition = len(mlist)-1-j
+        mlist[index], mlist[lastposition] = mlist[lastposition], mlist[index]
+    for k in mlist[-anz:]:
+        hand.append(k)
+        mlist[mlist.index(k)] = karte(k)
+    return mlist[-anz:], hand
 
 
-def validate():
-    countPairs = 0
-    countDrilling = 0
-    countQuadruplet = 0
 
-    straight = False
+def karte(zahl):
+    symbol = getsymbol(zahl)
+    if symbol == 0:
+        symbol = 'Kreuz'
+    elif symbol == 1:
+        symbol = 'Pik'
+    elif symbol == 2:
+        symbol = 'Herz'
+    else:
+        symbol = 'Karo'
 
-    arr1 = np.array(drawnSymbol)
-    arr2 = np.array(drawnColor)
+    nummer = getnummer(zahl)
+    if nummer == 10:
+        nummer = 'Bube'
+    elif nummer == 11:
+        nummer = 'Dame'
+    elif nummer == 12:
+        nummer = 'König'
+    elif nummer + 1 == 1:
+        nummer = 'Ass'
+    else:
+        nummer = nummer +1
 
-    arr1.sort()
-    if arr1[1] == arr1[0]+1:
-        if arr1[2] == arr1[1]+1:
-            if arr1[3] == arr1[2] + 1:
-                if arr1[4] == arr1[3] + 1:
-                    straight = True
+    return symbol + ' ' + str(nummer)
 
-    result = np.all(arr2 == arr2[0])
-    if result and straight:
-        if 11 in arr1 and 12 in arr1:
-            dict['Royal Flush'] +=1
-        else:
-            dict['Straight Flush'] += 1
-    elif straight:
-        dict['Straße'] += 1
-    elif result:
-        dict['Flush'] += 1
+def getnummer(zahl):
+    return zahl % 13
 
-    for i in arr1:
-        count = (arr1 == i).sum()
-        if count == 2:
-            countPairs +=1
-        if count == 3:
-            countDrilling +=1
-        if count == 4:
-            countQuadruplet +=1
+def getsymbol(zahl):
+    return int(zahl) // 13
 
-    if countPairs == 2:
-        if countDrilling == 3:
-            dict['Full House'] += 1
-        else:
-            dict['Paar'] += 1
-    elif countPairs == 4:
-        dict['Zwei Paare'] += 1
-    elif countDrilling == 3:
-        dict['Drilling'] += 1
-    elif countQuadruplet == 4:
-        dict['Vierling'] += 1
+def gethandr(hand):
+    handr = []
+    for i in range (len(hand)):
+        handr.append(getnummer(hand[i]))
+    return handr
 
-def percentage(list,drawTimes):
-    dictPercentage['Royal Flush'] = str((list['Royal Flush']*100)/drawTimes) + '%'
-    dictPercentage['Straight Flush'] = str((list['Straight Flush'] * 100) / drawTimes) + '%'
-    dictPercentage['Straße'] = str((list['Straße'] * 100) / drawTimes) + '%'
-    dictPercentage['Flush'] = str((list['Flush'] * 100) / drawTimes) + '%'
-    dictPercentage['Full House'] = str((list['Full House'] * 100) / drawTimes) + '%'
-    dictPercentage['Paar'] = str((list['Paar'] * 100) / drawTimes) + '%'
-    dictPercentage['Zwei Paare'] = str((list['Zwei Paare'] * 100) / drawTimes) + '%'
-    dictPercentage['Drilling'] = str((list['Drilling'] * 100) / drawTimes) + '%'
-    dictPercentage['Vierling'] = str((list['Vierling'] * 100) / drawTimes) + '%'
-    print(dictPercentage)
+def getsymr(hand):
+    symr = []
+    for i in range (len(hand)):
+        symr.append(getsymbol(hand[i]))
+    return symr
 
-if __name__ == '__main__':
-    drawTimes = input("Wie oft wollen Sie ziehen?")
-    for i in range(int(drawTimes)):
-        showCards(draw())
-        validate()
-    print(dict)
-    percentage(dict,int(drawTimes))
+def pair(hand):
+    #for i in range(0,5):
+       # print(getnummer(hand[i]))
+       # if(getnummer(hand[i])):
+    handr = gethandr(hand)
+    #print(handr)
+    dup = [x for i, x in enumerate(handr) if i != handr.index(x)]
+    if(len(dup) == 1):
+        return True
+    return False
+
+def drilling(hand):
+    handr = gethandr(hand)
+    #print(handr)
+    dup = [x for i, x in enumerate(handr) if i != handr.index(x)]
+    dup.append("fill")
+    counter = 0
+    #print(dup)
+    for j in range (len(hand)):
+        if((len(dup) == 1) or (dup[0] == dup[1])):
+            if(dup[0] == handr[j]):
+                counter += 1
+    if(counter == 3):
+        return True
+    return False
+
+def vierling(hand):
+    handr = gethandr(hand)
+    #print(handr)
+    dup = [x for i, x in enumerate(handr) if i != handr.index(x)]
+    dup.append("fill")
+    counter = 0
+    #print(dup)
+    for j in range (0,5):
+        if((len(dup) == 4)):
+            if(dup[0] == handr[j]):
+                counter += 1
+    if(counter == 4):
+        return True
+    return False
+
+
+def straight(hand):
+    handr = gethandr(hand)
+    #print(handr)
+    counter = 0
+    handr.sort()
+    for i in range(0,5):
+        if((handr[i] - handr[i-1])==1):
+            counter += 1
+    if(counter >=4):
+        return True
+    return False
+
+def straight_flush(hand):
+    handr = gethandr(hand)
+    symr = getsymr(hand)
+    #print(handr)
+    #print(symr)
+    counter = 0
+    handr.sort()
+    for i in range(0,5):
+        if(((handr[i] - handr[i-1])==1) and ((symr[i] - symr[i-1])==0)):
+            counter += 1
+    if(counter >=4):
+        return True
+    return False
+
+def royal_flush(hand):
+    handr = gethandr(hand)
+    symr = getsymr(hand)
+    #print(handr)
+    #print(symr)
+    counter = 0
+    handr.sort()
+    for i in range(2,5):
+        if((handr[0] == 0) and (handr[1] == 9) and ((handr[i] - handr[i-1])==1) and ((symr[i] - symr[i-1])==0)):
+            counter += 1
+    if(counter ==3):
+        return True
+    return False
+
+def flush(hand):
+    symr = getsymr(hand)
+    #print(symr)
+    counter = 0
+    for i in range(0,5):
+        if((symr[i] - symr[i-1])==0):
+            counter += 1
+    if(counter >=4):
+        return True
+    return False
+
+def full_house(hand):
+    handr = gethandr(hand)
+    handr.sort()
+    #print(handr)
+    #for i in range(0,3):
+        #if(((handr[i] - handr[i-1])==0)):
+            #counter += 1
+    #for i in range(2,5):
+        #if(((handr[i] - handr[i-1])==0)):
+            #counter += 1
+    #if(counter == 4):
+        #return True
+    #return False
+    if(drilling(handr[0:3])):
+        if(pair(handr[3:5])):
+            return True
+    if(pair(handr[0:2])):
+        if(drilling(handr[2:5])):
+            return True
+    return False   
+
+def twopair(hand):
+    handr = gethandr(hand)
+    #print(handr)
+    dup = [x for i, x in enumerate(handr) if i != handr.index(x)]
+    dup.append("fill")
+    #print(dup)
+    if((len(dup) == 3) and (dup[0] != dup[1])):
+        return True
+    return False
+
+dic1 = {'Royal Flush' : 0, 'Straight Flush' : 0, 'Vierling' : 0, 'Full House' : 0, 'Flush' : 0, 'Straight' : 0, 'Drilling' : 0, 'Two Pair' : 0, 'Pair' : 0, 'High Card' : 0}
+dic = {}
+komb = ['Royal Flush', 'Straight Flush', 'Vierling', 'Full House', 'Flush', 'Straight', 'Drilling', 'Two Pair', 'Pair', 'High Card']
+
+def createdic(min, max):
+    for i in range(min, max+1):
+        dic[i] = 0
+
+def kombinationen(hand):
+        for i in range(0,5):
+            if royal_flush(hand):
+                dic[0] += 1
+                return 'Royal flush'
+            elif straight_flush(hand):
+                dic[1] += 1
+                return 'Straight flush'
+            elif vierling(hand):
+                dic[2] += 1
+                return 'Four of a kind'
+            elif full_house(hand):
+                dic[3] += 1
+                return 'Full House'
+            elif flush(hand):
+                dic[4] += 1
+                return 'Flush'
+            elif straight(hand):
+                dic[5] += 1
+                return 'Straight'
+            elif drilling(hand):
+                dic[6] += 1
+                return 'Three of a kind'
+            elif twopair(hand):
+                dic[7] += 1
+                return 'Two pair'
+            elif pair(hand):
+                dic[8] += 1
+                return 'Pair'
+        dic[9] += 1
+        return "High Card"
+
+def kalkulation(anz):
+    for j in range(anz):
+        ziehung()
+        kombinationen(hand)       
+    return dic
+
+def kalkundausgabe(dic, komb, anz):
+    ausgabe = 0
+    for i in range(0, 10):
+        
+        print(komb[i] + " : " + str(round((dic[i]/anz)*100, 4)) + "%")
+    return ausgabe

@@ -1,8 +1,5 @@
 import random
 
-mlist = []
-hand = []
-
 def ziehung(anz=5):
     global mlist, hand
     mlist = []
@@ -239,3 +236,22 @@ def kalkundausgabe(dic, komb, anz):
         
         print(komb[i] + " : " + str(round((dic[i]/anz)*100, 4)) + "%")
     return ausgabe
+    
+
+
+if __name__ == '__main__':
+    createdic(0,9)
+    #print(ziehung())
+    #print(pair(hand))
+    #print(drilling(hand))
+    #print(straight(hand))
+    #print(straight_flush(hand))
+    #print(royal_flush(hand))
+    #print(flush(hand))
+    #print(full_house(hand))
+    #print(twopair(hand))
+    #print(vierling(hand))
+    #print(kombinationen(hand, 100000))
+    kalkulation(10000)
+    print(dic)
+    kalkundausgabe(dic, komb, 10000)

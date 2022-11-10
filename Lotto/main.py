@@ -2,7 +2,7 @@ import random
 
 def getrand():
     min = 1
-    max =45
+    max =46
     lottoZahlen1 = []
     lottoZahlen2 = []
 
@@ -22,7 +22,7 @@ def getrand():
     lottoZahlen1.append(lottoZahlen2)
 
 def statistik():
-    for i in range(1000):
+    for i in range(10000):
         getrand()
 
         for e in pickednumbArr:

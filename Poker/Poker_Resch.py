@@ -1,10 +1,10 @@
 import random
 
-handsymbols = []
 handvalues = []
-#hand = []
-lastcard = []
-dictPercentage = {'Royal Flush':0,'Straight Flush':0,'Straße':0,'Flush':0,'Full House':0,'Paar':0,'Zwei Paare':0,'Drilling':0,'Vierling':0}
+handsymbols = []
+valuecomparisons = []
+prozent = []
+realProbability = [0.000154, 0.00139, 0.0240, 0.1441, 0.1965, 0.3925, 2.1128, 4.7539, 42.2569, 50.1177]
 statistic = {
     "Royal Flush": 0,
     "Straight Flush": 0,
@@ -43,23 +43,11 @@ def getcards(minimum, maximum, amount):
         cards.append(g)
     for j in range(amount):
         randindex = random.randrange(0, maximum)
-        #die gezogene Karte am ende der liste hinzufügen, dMIT MAN sie nicht nochmal ziehen kann#
+
         lastPosition = len(cards) - 1 - j
         cards[randindex], cards[lastPosition] = cards[lastPosition], cards[randindex]
     return cards[-amount:]
 
-
-# def convertvalue(value):
-    realvalue = value + 2
-    if realvalue == 11:
-        return "J"
-    if realvalue == 12:
-        return "Q"
-    if realvalue == 13:
-        return "K"
-    if realvalue == 14:
-        return "A"
-    return realvalue
 
 
 def checkforpairs(values):
@@ -101,25 +89,27 @@ def checkforcombos(symbols, values):
         combo = True
     if not combo:
         statistic["High Card"] += 1
-
-   
+def valuecomparison():
+    for f in range (10):
+        valuecomparisons.append(((prozent[f] - realProbability[f]) / realProbability[f]))
 if __name__ == "__main__":
-    
-    for x in range(10000):
+    x = input("How many rounds?")
+    x = int(x)
+    for x in range(x):
         myCards = getcards(1, 52, 5)
         for i in myCards:
             handvalues.append(getcardnumber(i))
             handsymbols.append(getsymbol(i))
-           # hand.append([convertvalue(getcardnumber(i)), getsymbol(i)])
         checkforcombos(handsymbols, handvalues)
         handvalues = []
-        handysmbols = []
-    prozent = []
+        handsymbols = []
+    
     for i in statistic:
-         a = statistic[i] / 10000 * 100
+         a = statistic[i] / x * 100
          prozent.append(a)
-    print(prozent)
-    
-    
+    valuecomparison()     
+    print("Berechnete Wahrscheinlichkeiten:\n",prozent)
+    print("Differenz zwischen Berechneten Wslktn und tatsächlichen Wslktn in Prozent:\n",valuecomparisons)
+
 
     

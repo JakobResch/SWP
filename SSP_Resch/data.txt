@@ -1,0 +1,1 @@
+{"player": 22, "cpu": 28, "draws": 26, "rock": 76, "paper": 21, "scissors": 14, "spock": 12, "lizard": 29}

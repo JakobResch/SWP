@@ -1,0 +1,106 @@
+
+
+
+class Person:
+    def __init__(self, vorname, nachname, geschlecht):
+        self.vorname = vorname
+        self.nachname = nachname
+        self.geschlecht = geschlecht
+
+
+class Mitarbeiter(Person):
+    def __init__(self, vorname, nachname, geschlecht, firma):
+        super().__init__(vorname, nachname, geschlecht)
+        self.firma = firma
+
+
+class Gruppenleiter(Mitarbeiter):
+    def __init__(self, vorname, nachname, geschlecht, firma):
+        super().__init__(vorname, nachname, geschlecht, firma)
+
+
+class Abteilung:
+    def __init__(self, name):
+        self.name = name
+        self.mitarbeiter = []
+
+    def str(self):
+        return f'Abteilung: {self.name}\n'
+
+
+class Firma:
+    def __init__(self, firmenname):
+        self.firmenname = firmenname
+        self.abteilungen = []
+        self.mitarbeiter = []
+        self.gruppenleiter = []
+
+    def anzmitarbeiter(self):
+        anz = 0
+        for _ in self.mitarbeiter:
+            anz = anz + 1
+        return anz
+
+    def anzgruppenleiter(self):
+        anz = 0
+        for _ in self.gruppenleiter:
+            anz = anz + 1
+        return anz
+
+    def anzabteilungen(self):
+        anz = 0
+        for _ in self.abteilungen:
+            anz = anz + 1
+        return anz
+
+    def groessteAbteilung(self):
+        last = self.abteilungen[0].mitarbeiter
+        abteilungname = self.abteilungen[0].name
+        for abteilung in self.abteilungen:
+            if len(abteilung.mitarbeiter) > len(last):
+                abteilungname = abteilung.name
+        return abteilungname
+
+    def mannFrau(self):
+        mann = 0
+        frau = 0
+        for abteilung in self.abteilungen:
+            for mitarbeiter in abteilung.mitarbeiter:
+                if mitarbeiter.geschlecht == "mann":
+                    mann = mann + 1
+                else:
+                    frau = frau + 1
+        return {"mann": str(mann/(mann+frau)*100) + "%", "frau": str(frau/(mann+frau)*100) + "%"}
+
+
+f1 = Firma("Rast & Ruh GmbH BIKES")
+a1 = Abteilung("IT")
+a2 = Abteilung("Marketing")
+m1 = Mitarbeiter("Rubner", "Sabo", "mann", f1)
+m2 = Mitarbeiter("Jakob", "Resch", "mann", f1)
+m3 = Mitarbeiter("Daniel", "Untawurzi", "frau", f1)
+m4 = Mitarbeiter("joseppe", "linter", "frau", f1)
+g1 = Gruppenleiter("Fabi", "Stein", "mann", f1)
+g2 = Gruppenleiter("Noah", "Muigg", "mann", f1)
+
+a1.mitarbeiter.append(m1)
+a1.mitarbeiter.append(g1)
+a1.mitarbeiter.append(m4)
+a2.mitarbeiter.append(m3)
+a2.mitarbeiter.append(m2)
+a2.mitarbeiter.append(g2)
+f1.abteilungen.append(a1)
+f1.abteilungen.append(a2)
+f1.gruppenleiter.append(g1)
+f1.gruppenleiter.append(g2)
+f1.mitarbeiter.append(m1)
+f1.mitarbeiter.append(m2)
+f1.mitarbeiter.append(m3)
+
+print(f1.firmenname)
+print("Anzahl der Mitarbeiter: " + str(f1.anzmitarbeiter()))
+print("Anzahl der Gruppenleiter: " + str(f1.anzgruppenleiter()))
+print("Anzahl der Abteilungen: " + str(f1.anzabteilungen()))
+print("Mitarbeiterstärkste Abteilung: " + str(f1.groessteAbteilung()))
+print("Prozentanteil Männer und Frauen: " + str(f1.mannFrau()))
+

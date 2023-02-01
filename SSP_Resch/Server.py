@@ -12,6 +12,7 @@ class Ausgabe(Resource):
         with open('data.txt', 'r') as file:
             list2 = json.load(file)
             plt.bar(*zip(*list2.items()))
+            plt.savefig("pic.png")
             plt.show()
         return list2
 api.add_resource(Ausgabe, "/reschfresh")

@@ -12,35 +12,35 @@ class Node:
 class LinkedList:
 
     def __init__(self):
-        ## initializing the head with None
+        ## den head als none definieren
         self.head = None
 
     def insert(self, new_node):
-        ## check whether the head is empty or not
+        ## schauen ob head leer ist
         if self.head is None:
-            ## head is empty
-            ## assigning the node to head
+            ## wenn head leer ist..
+            ## zuweisung des new node zum head
             self.head = new_node
 
         else:
-            ## getting the last node
+            ## das erste node wird als last node definiert 
             last_node = self.head
             while last_node.next != None:
                 last_node = last_node.next
 
-            ## assigning the new node to the next pointer of last node
+            ## Zuweisung des neuen nodes an den nächsten Pointer des letzten nodes
             last_node.next = new_node
 
     def display(self):
-        ## variable for iteration
+        ## variable für iteration, head (1. Elemten in linked list wird als temp node definiert)
         temp_node = self.head
 
-        ## iterating until we reach the end of the linked list
+        ## durchiterieren bis wir am ende sind
         while temp_node != None:
-            ## printing the node data
+            ## Ausgabe der node
             print(temp_node.data, end='->')
 
-            ## moving to the next node
+            ## zum mächsten Node springen
             temp_node = temp_node.next
 
         print('Null')
@@ -53,10 +53,10 @@ class LinkedList:
                 length +=1
         print(length)
 def home():
-    ## instantiating the linked list
+    ## Linked list initialisieren
     linked_list = LinkedList()
 
-    ## inserting the data into the linked list
+    ## Daten händisch hinzufügen
     linked_list.insert(Node(1))
     linked_list.insert(Node(2))
     linked_list.insert(Node(3))
@@ -65,7 +65,7 @@ def home():
     linked_list.insert(Node(6))
     linked_list.insert(Node(7))
 
-	## generating random integers
+	## Nodes linked list über for hinzufügen
     num_of_nodes = int(input("Enter the number of nodes to insert: "))
     min = int(input("What is the min value of the inserted node?: "))
     max = int(input("What is the max value of the inserted node?: "))
@@ -73,7 +73,7 @@ def home():
         i = random.randint(min,max)
         linked_list.insert(Node(i))
     
-    ## printing the linked list
+    ## Ausgabe
     linked_list.display()
     linked_list.length()
 
